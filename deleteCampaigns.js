@@ -14,16 +14,14 @@ function deleteCampaigns(){
 		.then(response => response.json())
 		.then(r => {
 			var campaigns = r.data
-			var weekAgo = new Date() - (1000 * 60 * 60 * 24 * 7 * 3)
+			var threeWeeksAgo = new Date() - (1000 * 60 * 60 * 24 * 7 * 3)
 
 			//Loop through the old ones (inactive, and not edited in 3 weeks)
 
 			campaigns.forEach(c =>{
-				//Not enabled, and less edited a week ago
+				//Not enabled, and less edited 3 weeks ago
 				var lastUpdated = new Date(c.updated)
-				console.log(lastUpdated)
-				console.log(weekAgo)
-				if(c.state != "enabled" && lastUpdated < weekAgo){
+				if(c.state != "enabled" && lastUpdated < threeWeeksAgo){
 					//Delete old ones
 					await deleteCampaign(c.id)
 				}
