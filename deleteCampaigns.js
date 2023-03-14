@@ -4,6 +4,7 @@ function deleteCampaigns(){
 	var key = document.getElementById("apiKey").value;
 	var app = document.getElementById("appID").value;
 
+	console.log("Preparing to delete")
 
 
 	//Get all the campaigns in an application
