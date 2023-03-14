@@ -15,7 +15,7 @@ function deleteCampaigns(){
 		.then(response => response.json())
 		.then(r => {
 			var campaigns = r.data
-			var cutOffDate = new Date("31-007-2021") // new Date() - (1000 * 60 * 60 * 24 * 7 * 3)
+			var cutOffDate = new Date("07-31-2021") // new Date() - (1000 * 60 * 60 * 24 * 7 * 3)
 
 			//Loop through the old ones (inactive, and not edited in 3 weeks)
 
