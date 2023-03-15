@@ -1,33 +1,47 @@
 
-function deleteCampaigns(){
-	var url = document.getElementById("talonUrl").value;
-	var key = document.getElementById("apiKey").value;
-	var app = document.getElementById("appID").value;
+async function deleteCampaigns(){
 
 	console.log("Preparing to delete")
 
 
 	//Get all the campaigns in an application
-	fetch('https://' + url + '/v1/applications/' + app + '/campaigns', {
+	var cutOffDate = new Date() - (1000 * 60 * 60 * 24 * 7 * 3)
+	var campaigns = await callCampaigns([])
+			//Loop through the old ones (inactive, and not edited in 3 weeks)
+
+	var count = 0
+	for (const c of campaigns){
+		//Not enabled, and less edited 3 weeks ago
+		var lastUpdated = new Date(c.updated)
+		if(c.state != "enabled" && c.state != "running" && lastUpdated < cutOffDate){ 
+			//Delete old ones
+			var res = await deleteCampaign(c.id)
+			console.log(c.id + " : " + c.updated + " " + c.state + " : " + c.name)
+			console.log(res)
+			count += 1
+		}
+	}
+
+	console.log(count + " campaigns deleted")
+}
+
+function callCampaigns(campaigns=[]){
+	var url = document.getElementById("talonUrl").value;
+	var key = document.getElementById("apiKey").value;
+	var app = document.getElementById("appID").value;
+
+	return fetch('https://' + url + '/v1/applications/' + app + '/campaigns?skip=' + campaigns.length, {
 		   headers: {
 		      'Authorization': 'ManagementKey-v1 ' + key
 		   }})
 		.then(response => response.json())
 		.then(r => {
-			var campaigns = r.data
-			var cutOffDate = new Date("07-31-2021") // new Date() - (1000 * 60 * 60 * 24 * 7 * 3)
+			campaigns = campaigns.concat(r.data)
 
-			//Loop through the old ones (inactive, and not edited in 3 weeks)
-
-			campaigns.forEach(c =>{
-				//Not enabled, and less edited 3 weeks ago
-				var lastUpdated = new Date(c.updated)
-				if(c.state != "enabled" && lastUpdated < cutOffDate){
-					//Delete old ones
-					//await deleteCampaign(c.id)
-					console.log(c.id + " : " + c.updated + " " + c.state + " : " + c.name)
-				}
-			})
+			if(r.totalResultSize > campaigns.length){
+				return callCampaigns(campaigns)
+			}
+			return campaigns
 		})
 }
 
@@ -42,5 +56,5 @@ function deleteCampaign(id){
 		      'Authorization': 'ManagementKey-v1 ' + key
 		   },
 			method:"DELETE"})
-		.then(response => {console.log(response)})
+		.then(response => { return response})
 }
