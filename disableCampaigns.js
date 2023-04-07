@@ -5,13 +5,13 @@ async function disableAllCampaigns(){
 
 
 	//Get all the campaigns in an application
-	var campaigns = await callCampaigns([])
+	var campaigns = await callCampaignsDisable([])
 
 	var count = 0
 	for (const c of campaigns){
 		//Not enabled, and less edited 3 weeks ago
 		if(c.state == "enabled"){ 
-			var res = await deleteCampaign(c.id)
+			var res = await deactivateCampaign(c.id)
 			console.log(res)
 			count += 1
 
@@ -23,7 +23,7 @@ async function disableAllCampaigns(){
 	console.log(count + " campaigns deactivated")
 }
 
-function callCampaigns(campaigns=[]){
+function callCampaignsDisable(campaigns=[]){
 	var url = document.getElementById("talonUrl").value;
 	var key = document.getElementById("apiKey").value;
 	var app = document.getElementById("appID").value;
