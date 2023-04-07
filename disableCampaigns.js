@@ -1,4 +1,3 @@
-
 async function disableAllCampaigns(){
 
 	console.log("Preparing to deactivate")
@@ -9,9 +8,9 @@ async function disableAllCampaigns(){
 
 	var count = 0
 	for (const c of campaigns){
-		//Not enabled, and less edited 3 weeks ago
+		//Not enabled
 		if(c.state == "enabled"){ 
-			var res = await deactivateCampaign(c.id)
+			var res = await deactivateCampaign(c)
 			console.log(res)
 			count += 1
 
